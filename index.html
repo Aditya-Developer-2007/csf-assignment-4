@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculator by Aadyy</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+      padding: 20px;
+    }
+
+    .calculator-box {
+      background-color: #1c1e30;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      max-width: 400px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffffaa;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .screen-section {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .expression-preview {
+      font-size: 16px;
+      color: #aaa;
+      text-align: right;
+      padding-right: 10px;
+      height: 20px;
+    }
+
+    .main-display {
+      width: 100%;
+      height: 60px;
+      font-size: 26px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      background-color: #1f1f2e;
+      color: white;
+      text-align: right;
+      outline: none;
+    }
+
+    .main-display::placeholder {
+      color: white;
+      opacity: 1;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(5, 60px);
+      gap: 12px;
+    }
+
+    .btn {
+      font-size: 20px;
+      border: none;
+      border-radius: 12px;
+      background-color: rgba(255, 255, 255, 0.08);
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .tall-btn {
+      grid-row: span 2;
+    }
+
+    .btn-equal {
+      background-color: #f39c12;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .btn-equal:hover {
+      background-color: #e67e22;
+    }
+
+    @media (max-width: 480px) {
+      .calculator-box {
+        padding: 15px;
+        gap: 15px;
+      }
+
+      .main-display {
+        font-size: 22px;
+        height: 50px;
+      }
+
+      .button-grid {
+        grid-template-rows: repeat(5, 50px);
+      }
+
+      .btn {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator-box">
+    <div class="brand-title">Aadyy.Developer</div>
+
+    <div class="screen-section">
+      <div class="expression-preview" id="livePreview"></div>
+      <input type="text" class="main-display" id="calcDisplay" placeholder="0" readonly>
+    </div>
+
+    <div class="button-grid">
+      <button class="btn" onclick="clearAll()">AC</button>
+      <button class="btn" onclick="removeLast()">Del</button>
+      <button class="btn" onclick="addOperator('/')">/</button>
+      <button class="btn" onclick="addOperator('*')">×</button>
+
+      <button class="btn" onclick="addNumber('7')">7</button>
+      <button class="btn" onclick="addNumber('8')">8</button>
+      <button class="btn" onclick="addNumber('9')">9</button>
+      <button class="btn" onclick="addOperator('-')">−</button>
+
+      <button class="btn" onclick="addNumber('4')">4</button>
+      <button class="btn" onclick="addNumber('5')">5</button>
+      <button class="btn" onclick="addNumber('6')">6</button>
+      <button class="btn" onclick="addOperator('+')">+</button>
+
+      <button class="btn" onclick="addNumber('1')">1</button>
+      <button class="btn" onclick="addNumber('2')">2</button>
+      <button class="btn" onclick="addNumber('3')">3</button>
+      <button class="btn btn-equal tall-btn" onclick="computeResult()">=</button>
+
+      <button class="btn" onclick="addNumber('00')">00</button>
+      <button class="btn" onclick="addNumber('0')">0</button>
+      <button class="btn" onclick="addNumber('.')">.</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById("calcDisplay");
+    const preview = document.getElementById("livePreview");
+    let expr = "";
+
+    function addNumber(val) {
+      expr += val;
+      display.value = expr;
+      updatePreview();
+    }
+
+    function addOperator(op) {
+      if (expr !== "" && !isNaN(expr[expr.length - 1])) {
+        updatePreview();
+      }
+      expr += op;
+      display.value = expr;
+    }
+
+    function updatePreview() {
+      try {
+        if (expr !== "" && !isNaN(expr[expr.length - 1])) {
+          preview.innerText = eval(expr);
+        } else {
+          preview.innerText = "";
+        }
+      } catch {
+        preview.innerText = "";
+      }
+    }
+
+    function clearAll() {
+      expr = "";
+      display.value = "";
+      preview.innerText = "";
+    }
+
+    function removeLast() {
+      expr = expr.slice(0, -1);
+      display.value = expr;
+      updatePreview();
+    }
+
+    function computeResult() {
+      try {
+        display.value = eval(expr);
+        preview.innerText = "";
+        expr = display.value;
+      } catch {
+        display.value = "Error";
+        preview.innerText = "";
+        expr = "";
+      }
+    }
+  </script>
+
+</body>
+</html>
